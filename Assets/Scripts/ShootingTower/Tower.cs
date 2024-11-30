@@ -10,6 +10,7 @@ namespace ShootingTower
         [SerializeField] private Transform _shootPoint;
         [SerializeField] private Projectile _projectilePrefab;
         [SerializeField] private float _projectileSpeed = 5.0f;
+        [SerializeField] private bool _isParabolicTrajectory;
         private float _lastShotTime = -0.5f;
 
         private void Update()
@@ -31,25 +32,37 @@ namespace ShootingTower
                     continue;
                 }
 
-                Attack(monster);
+                var time = 0f;
+                var hitPoint = GetHitPoint(monster.transform.position,
+                    monster.LastSpeed, _shootPoint.position, _projectileSpeed, out time);
+                var aim = hitPoint - _shootPoint.position;
+                
+                Shoot(aim, time, hitPoint);
+
                 _lastShotTime = Time.time;
             }
         }
 
-        private void Attack(Monster monster)
+        private void Shoot(Vector3 aim, float time, Vector3 hitPoint)
         {
             var projectile = Instantiate(_projectilePrefab);
             projectile.transform.position = _shootPoint.position;
-
-            var hitPoint = GetHitPoint(monster.transform.position,
-                monster.LastSpeed, _shootPoint.position, _projectileSpeed);
-            var aim = hitPoint - _shootPoint.position;
             var projectileVelocity = aim.normalized * _projectileSpeed;
+
+            if (_isParabolicTrajectory)
+            {
+                aim.y = 0;
+                var antiGravity = -Physics.gravity.y * time / 2;
+                var deltaY = (hitPoint.y - projectile.transform.position.y) / time;
+                projectileVelocity.y = antiGravity + deltaY;
+            }
+
+            projectile.SetUseGravity(_isParabolicTrajectory);
             projectile.SetVelocity(projectileVelocity);
         }
 
         private Vector3 GetHitPoint(Vector3 targetPosition, Vector3 targetSpeed, Vector3 attackerPosition,
-            float bulletSpeed)
+            float bulletSpeed, out float time)
         {
             var q = targetPosition - attackerPosition;
             q.y = 0;
@@ -64,7 +77,7 @@ namespace ShootingTower
             var t1 = (-b + D) / (2 * a);
             var t2 = (-b - D) / (2 * a);
 
-            var time = Mathf.Max(t1, t2);
+            time = Mathf.Max(t1, t2);
 
             var ret = targetPosition + targetSpeed * time;
             return ret;
