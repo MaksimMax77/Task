@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Unit;
 
 public class SimpleTower : MonoBehaviour {
 	public float m_shootInterval = 0.5f;
