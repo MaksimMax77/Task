@@ -31,7 +31,6 @@ namespace ShootingTower
             {
                 return;
             }
-            
             monster.GetDamage(_damage);
             Destroy(gameObject);
         }

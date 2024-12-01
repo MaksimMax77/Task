@@ -10,6 +10,7 @@ namespace Unit
         [SerializeField] private float _reachDistance = 0.3f;
         private Vector3 _lastSpeed;
         private float _currentHp;
+        private UnitsManager _unitsManager;
         
         public Vector3 LastSpeed => _lastSpeed;
 
@@ -18,13 +19,18 @@ namespace Unit
             _destination = destination;
         }
 
+        public void SetUnitsManager(UnitsManager unitsManager)
+        {
+            _unitsManager = unitsManager;
+        }
+
         public void GetDamage(float damage)
         {
             _currentHp -= damage;
 
             if (_currentHp <= 0)
             {
-                Destroy(gameObject);
+                _unitsManager.UnitReturnToPool(this);
             }
         }
 
@@ -42,7 +48,7 @@ namespace Unit
             
             if (Vector3.Distance(transform.position, _destination.transform.position) <= _reachDistance)
             {
-                Destroy(gameObject);
+                _unitsManager.UnitReturnToPool(this);
                 return;
             }
 
