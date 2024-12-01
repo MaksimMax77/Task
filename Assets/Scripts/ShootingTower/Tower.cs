@@ -3,9 +3,8 @@ using UnityEngine;
 
 namespace ShootingTower
 {
-    public class Tower2 : MonoBehaviour
+    public class Tower : MonoBehaviour
     {
-        /*[SerializeField] private Monster _monster;*/
         [SerializeField] private float _range = 4f;
         [SerializeField] private float _projectileSpeed = 5.0f;
         [SerializeField] private float _rotateSpeed;
