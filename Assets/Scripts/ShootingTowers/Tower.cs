@@ -1,7 +1,7 @@
-﻿using Unit;
+﻿using Units;
 using UnityEngine;
 
-namespace ShootingTower
+namespace ShootingTowers
 {
     public class Tower : MonoBehaviour
     {
@@ -13,20 +13,25 @@ namespace ShootingTower
         [SerializeField] private Projectile _projectilePrefab;
         [SerializeField] private Transform _rotateObj;
         [SerializeField] private bool _useGravity;
-        [SerializeField] private UnitsManager _unitsManager;
+        private UnitsManager _unitsManager;
         private Vector3 _hitPoint;
         private float _lastShotTime = -0.5f;
 
+        public void Init(UnitsManager unitsManager)
+        {
+            _unitsManager = unitsManager;
+        }
+
         private void Update()
         {
-            if (!TryGetMonsterByRangeDistance(out var monster))
+            if (!TryGetUnitByRangeDistance(out var unit))
             {
                 return;
             }
 
-            _hitPoint = GetHitPoint(monster.transform.position,
-                monster.LastSpeed, _shootPoint.position, _projectileSpeed, out var time);
-            
+            _hitPoint = GetHitPoint(unit.UnitObj.transform.position,
+                unit.LastSpeed, _shootPoint.position, _projectileSpeed, out var time);
+
             var direction = (_hitPoint - _shootPoint.position).normalized * _projectileSpeed;
 
             var gravity = 0f;
@@ -36,36 +41,35 @@ namespace ShootingTower
                 gravity = -Physics.gravity.y * time / 2;
                 direction.y = gravity;
             }
-            
+
             Rotate(direction);
 
             if (_lastShotTime + _shootInterval > Time.time)
             {
                 return;
             }
-            
-            Shoot(direction, gravity, time);
+
             _lastShotTime = Time.time;
+            Shoot(direction, gravity, time);
         }
 
-        private bool TryGetMonsterByRangeDistance(out Monster monster)
+        private bool TryGetUnitByRangeDistance(out Unit unit)
         {
-            monster = null;
+            unit = null;
             
-            for (int i = 0, len = _unitsManager.ActiveMonsters.Count; i < len; ++i)
+            for (int i = 0, len = _unitsManager.Units.Count; i < len; ++i)
             {
                 if (Vector3.Distance(transform.position, 
-                        _unitsManager.ActiveMonsters[i].transform.position) > _range)
+                        _unitsManager.Units[i].UnitObj.transform.position) > _range)
                 {
                     continue;
                 }
 
-                monster = _unitsManager.ActiveMonsters[i];
+                unit = _unitsManager.Units[i];
                 return true;
             }
 
             return false;
-      
         }
 
         private Vector3 GetHitPoint(Vector3 targetPosition, Vector3 targetSpeed, Vector3 attackerPosition,
