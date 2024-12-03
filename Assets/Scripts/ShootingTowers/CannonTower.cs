@@ -7,9 +7,9 @@ namespace ShootingTowers
 {
     public class CannonTower : Tower<CannonTowerConfiguration>, IUpdatable
     {
-        private float _rotateSpeed;
-        private Transform _rotateObj;
-        private bool _isParabolicTrajectory; 
+        private readonly float _rotateSpeed;
+        private readonly Transform _rotateObj;
+        private readonly bool _isParabolicTrajectory; 
         private Vector3 _hitPoint;
         private float _projectileDestinationTime;
 

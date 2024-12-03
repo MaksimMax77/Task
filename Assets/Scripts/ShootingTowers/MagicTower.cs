@@ -9,7 +9,7 @@ namespace ShootingTowers
 {
     public class MagicTower : Tower<TowerConfiguration>, IUpdatable
     {
-        private List<Projectile> _projectiles = new List<Projectile>();
+        private readonly List<Projectile> _projectiles = new List<Projectile>();
         private Unit _unit;
 
         public MagicTower(UnitsManager unitsManager, TowerConfiguration towerConfiguration)

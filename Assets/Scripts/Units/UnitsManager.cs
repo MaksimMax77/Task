@@ -8,11 +8,11 @@ namespace Units
 {
     public class UnitsManager : IUpdatable, IDisposable
     {
-        private float _interval;
-        private Transform _moveTarget;
-        private Transform _unitStartPoint;
-        private UnitsPool _unitsPool;
-        private List<Unit> _units = new List<Unit>();
+        private readonly float _interval;
+        private readonly Transform _moveTarget;
+        private readonly Transform _unitStartPoint;
+        private readonly UnitsPool _unitsPool;
+        private readonly List<Unit> _units = new List<Unit>();
         private float _lastSpawn = -1;
 
         public List<Unit> Units => _units;

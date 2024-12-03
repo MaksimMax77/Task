@@ -1,8 +1,7 @@
 ﻿using System;
-using ShootingTowers.Projectiles;
 using UnityEngine;
 
-namespace Units
+namespace ShootingTowers.Projectiles
 {
     public class ProjectileHitHandler : MonoBehaviour
     {

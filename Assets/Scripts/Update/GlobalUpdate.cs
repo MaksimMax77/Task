@@ -5,7 +5,7 @@ namespace Update
 {
     public class GlobalUpdate : MonoBehaviour
     {
-        private List<IUpdatable> _updatableObjects = new List<IUpdatable>();
+        private readonly List<IUpdatable> _updatableObjects = new List<IUpdatable>();
 
         public void AddUpdatableObject(IUpdatable updatableObj)
         {

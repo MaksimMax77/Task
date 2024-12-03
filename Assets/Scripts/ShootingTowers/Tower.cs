@@ -7,12 +7,12 @@ namespace ShootingTowers
 {
     public abstract class Tower<T> where T : TowerConfiguration
     {
-        protected TowerGameObject _towerGameObject;
-        protected Projectile _projectilePrefab;
-        protected float _projectileSpeed;
-        private float _shootInterval;
-        private float _range;
-        private UnitsManager _unitsManager;
+        protected readonly TowerGameObject _towerGameObject;
+        protected readonly Projectile _projectilePrefab;
+        protected readonly float _projectileSpeed;
+        private readonly float _shootInterval;
+        private readonly float _range;
+        private readonly UnitsManager _unitsManager;
         private float _lastShotTime = -0.5f;
 
         protected Tower(UnitsManager unitsManager, T towerConfiguration)

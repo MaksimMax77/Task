@@ -7,14 +7,14 @@ namespace Units
     public class Unit
     {
         public event Action<Unit> Death;
-        private float _speed;
-        private float _maxHp;
+        private readonly UnitGameObject _unitObj;
+        private readonly float _speed;
+        private readonly float _maxHp;
+        private readonly float _reachDistance;
         private float _currentHp;
-        private float _reachDistance;
         private Transform _destination;
         private Vector3 _lastSpeed;
-        private UnitGameObject _unitObj;
-        
+
         public Vector3 LastSpeed => _lastSpeed;
         public UnitGameObject UnitObj => _unitObj;
 
@@ -37,7 +37,7 @@ namespace Units
         {
             _unitObj.transform.position = position;
         }
-        
+
         public void SetDestination(Transform destination)
         {
             _destination = destination;
@@ -61,7 +61,7 @@ namespace Units
             }
 
             var direction = _destination.position - _unitObj.transform.position;
-            
+
             if (direction.magnitude <= _reachDistance)
             {
                 Death?.Invoke(this);

@@ -6,10 +6,10 @@ namespace Units
 {
     public class UnitsPool 
     {
-        private Transform _pooledParent;
-        private Transform _activeParent;
-        private List<Unit> _pooledObjects = new List<Unit>();
-        private List<Unit> _activeObjects = new List<Unit>();
+        private readonly Transform _pooledParent;
+        private readonly Transform _activeParent;
+        private readonly List<Unit> _pooledObjects = new List<Unit>();
+        private readonly List<Unit> _activeObjects = new List<Unit>();
 
         public UnitsPool(UnitsPoolConfiguration unitsPoolConfiguration)
         {
@@ -49,11 +49,6 @@ namespace Units
             unit.UnitObj.transform.SetParent(_activeParent);
             _activeObjects.Add(unit);
             return true;
-        }
-
-        public List<Unit> GetPooled()
-        {
-            return _pooledObjects;
         }
     }
 }
