@@ -1,33 +1,36 @@
-﻿using ShootingTowers;
+﻿using Dispose;
+using ShootingTowers;
 using ShootingTowers.Configs;
 using Units;
 using Units.Configs;
 using UnityEngine;
 using Update;
 
-namespace Installer
+namespace Core
 {
     public class GameInstaller : MonoBehaviour
     {
         [SerializeField] private UnitsManagerSettings _unitsManagerSettings;
-        [SerializeField] private GlobalUpdate _globalUpdate;
         [SerializeField] private UnitsPoolConfiguration _unitsPoolConfiguration;
-        [SerializeField] private ShootingConfiguration _magicTowerShootingConfiguration;
-        [SerializeField] private Tower _tower;
+        [SerializeField] private TowerConfiguration _magicTowerConfiguration;
+        [SerializeField] private CannonTowerConfiguration _cannonTowerConfiguration; 
+        [SerializeField] private GlobalUpdate _globalUpdate;
+        [SerializeField] private Disposer _disposer;
         private UnitsPool _unitsPool;
         private UnitsManager _unitsManager;
-        private ShootingControl _magicTowerShootingControl;
         private MagicTower _magicTower;
+        private CannonTower _cannonTower;
 
         private void Awake()
         {
             _unitsPool = new UnitsPool(_unitsPoolConfiguration);
             _unitsManager = new UnitsManager(_unitsPool, _unitsManagerSettings);
-            _magicTowerShootingControl = new ShootingControl(_unitsManager, _magicTowerShootingConfiguration);
-            _magicTower = new MagicTower(_magicTowerShootingControl);
+            _magicTower = new MagicTower(_unitsManager, _magicTowerConfiguration);
+            _cannonTower = new CannonTower(_unitsManager, _cannonTowerConfiguration);
             _globalUpdate.AddUpdatableObject(_unitsManager);
             _globalUpdate.AddUpdatableObject(_magicTower);
-            _tower.Init(_unitsManager);
+            _globalUpdate.AddUpdatableObject(_cannonTower);
+            _disposer.Add(_unitsManager);
         }
     }
 }

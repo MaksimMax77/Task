@@ -1,17 +1,20 @@
-﻿using UnityEngine;
+﻿using ShootingTowers.Projectiles;
+using UnityEngine;
 
 namespace ShootingTowers.Configs
 {
-    public class ShootingConfiguration : MonoBehaviour
+    public class TowerConfiguration : MonoBehaviour
     {
-        [SerializeField] private ShootingGameObject shootingGameObject;
+        [SerializeField] private TowerGameObject _towerGameObject;
         [SerializeField] private float _shootInterval;
         [SerializeField] private float _range;
         [SerializeField] private Projectile _projectilePrefab;
+        [SerializeField] private float _projectileSpeed;
 
-        public ShootingGameObject ShootingGameObject => shootingGameObject;
+        public TowerGameObject TowerGameObject => _towerGameObject;
         public float ShootInterval => _shootInterval;
         public float Range => _range;
         public Projectile ProjectilePrefab => _projectilePrefab;
+        public float ProjectileSpeed => _projectileSpeed;
     }
 }

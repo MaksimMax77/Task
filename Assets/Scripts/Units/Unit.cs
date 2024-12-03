@@ -7,7 +7,6 @@ namespace Units
     public class Unit
     {
         public event Action<Unit> Death;
-        public event Action<Unit> DestinationReached;
         private float _speed;
         private float _maxHp;
         private float _currentHp;
@@ -29,7 +28,7 @@ namespace Units
             _unitObj.ProjectileHitHandler.Hit += GetDamage;
         }
 
-        public void Dispose()//todo вызвать 
+        public void Dispose()
         {
             _unitObj.ProjectileHitHandler.Hit -= GetDamage;
         }
@@ -53,32 +52,26 @@ namespace Units
                 Death?.Invoke(this);
             }
         }
-        
+
         public void Update()
         {
             if (_destination == null)
             {
                 return;
             }
+
+            var direction = _destination.position - _unitObj.transform.position;
             
-            if (Vector3.Distance(_unitObj.transform.position, _destination.transform.position) <= _reachDistance)
+            if (direction.magnitude <= _reachDistance)
             {
-                DestinationReached?.Invoke(this);
+                Death?.Invoke(this);
                 return;
             }
 
-            var direction = _destination.position - _unitObj.transform.position;
-
-            if (direction.magnitude > 0.5f)
-            {
-                _lastSpeed = direction.normalized * _speed;
-                _unitObj.transform.position += _lastSpeed * Time.deltaTime;
-                _unitObj.transform.forward = _lastSpeed;
-            }
-            else
-            {
-                _lastSpeed = new Vector3(0, 0, 0);
-            }
+            _lastSpeed = direction.normalized * _speed;
+            var transform = _unitObj.transform;
+            transform.position += _lastSpeed * Time.deltaTime;
+            transform.forward = _lastSpeed;
         }
     }
 }

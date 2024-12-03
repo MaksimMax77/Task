@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Units.Configs;
 using UnityEngine;
 using Update;
 
 namespace Units
 {
-    public class UnitsManager : IUpdatable
+    public class UnitsManager : IUpdatable, IDisposable
     {
         private float _interval;
         private Transform _moveTarget;
@@ -45,7 +46,6 @@ namespace Units
             unit.SetPosition(_unitStartPoint.position);
             unit.SetDestination(_moveTarget.transform);
             unit.Death += OnUnitDeath;
-            unit.DestinationReached += OnUnitDestinationReached;
             _units.Add(unit);
         }
 
@@ -55,19 +55,21 @@ namespace Units
             _units.Remove(unit);
             _unitsPool.ReturnToPool(unit);
         }
-
-        private void OnUnitDestinationReached(Unit unit)
-        {
-            unit.DestinationReached -= OnUnitDestinationReached;
-            _units.Remove(unit);
-            _unitsPool.ReturnToPool(unit);
-        }
-
+        
         private void UpdateUnits()
         {
             for (var i = _units.Count - 1; i >= 0; i--) 
             {
                 _units[i].Update();
+            }
+        }
+
+        public void Dispose()
+        {
+            for (int i = 0, len = _units.Count; i < len; ++i)
+            {
+                _units[i].Death -= OnUnitDeath;
+                _units[i].Dispose();
             }
         }
     }

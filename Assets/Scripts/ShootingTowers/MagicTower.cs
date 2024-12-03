@@ -1,52 +1,72 @@
-﻿using Update;
+﻿using System.Collections.Generic;
+using ShootingTowers.Configs;
+using ShootingTowers.Projectiles;
+using Units;
+using UnityEngine;
+using Update;
 
 namespace ShootingTowers
 {
-    public class MagicTower : IUpdatable
+    public class MagicTower : Tower<TowerConfiguration>, IUpdatable
     {
-        private ShootingControl _shootingControl;
+        private List<Projectile> _projectiles = new List<Projectile>();
+        private Unit _unit;
 
-        public MagicTower(ShootingControl shootingControl)
+        public MagicTower(UnitsManager unitsManager, TowerConfiguration towerConfiguration)
+            : base(unitsManager, towerConfiguration)
         {
-            _shootingControl = shootingControl;
         }
 
         public void Update()
         {
-            if (!_shootingControl.TryGetUnitByRangeDistance(out var unit)
-                || !_shootingControl.ShootIntervalIsEnd())
+            if (!IsEnabled())
             {
                 return;
             }
+            
+            if (_unit == null)
+            {
+                if (!TryGetUnitByRangeDistance(out var unit))
+                {
+                    return;
+                }
 
-            var projectile = _shootingControl.CreateProjectile();
-            projectile.SetVelocity((unit.UnitObj.transform.position - _shootingControl.ShootPoint.position).normalized *
-                                   5); //todo исправить хардкод
+                _unit = unit;
+                _unit.Death += SetUnitNull;
+            }
+
+            MoveProjectiles(_unit.UnitObj);
+            
+            if (!ShootIntervalIsEnd())
+            {
+                return;
+            }
+            
+            var projectile = Object.Instantiate(_projectilePrefab, _towerGameObject.ShootPoint.position,
+                Quaternion.identity);
+            _projectiles.Add(projectile);
         }
 
-
-        /*void Update()
+        private void SetUnitNull(Unit unit)
         {
-            if (m_projectilePrefab == null)
-                return;
-
-            /*foreach (var monster in FindObjectsOfType<Monster>())
+            _unit.Death -= SetUnitNull;
+            _unit = null;
+        }
+        
+        private void MoveProjectiles(UnitGameObject unitGameObject)
         {
-            if (Vector3.Distance(transform.position, monster.transform.position) > m_range)
-                continue;
+            for (var i = _projectiles.Count - 1; i >= 0; i--)
+            {
+                var projectile = _projectiles[i];
 
-            if (m_lastShotTime + m_shootInterval > Time.time)
-                continue;
-
-            // shot
-            var projectile =
-                Instantiate(m_projectilePrefab, transform.position + Vector3.up * 1.5f, Quaternion.identity) as
-                    GameObject;
-            var projectileBeh = projectile.GetComponent<GuidedProjectile>();
-            projectileBeh.m_target = monster.gameObject;
-
-            m_lastShotTime = Time.time;
-        }#1#
-        }*/
+                if (projectile == null || unitGameObject == null)
+                {
+                    return;
+                }
+                
+                projectile.SetVelocity((unitGameObject.transform.position 
+                                        - projectile.transform.position).normalized * _projectileSpeed);
+            }
+        }
     }
 }

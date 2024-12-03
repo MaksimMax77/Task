@@ -1,12 +1,13 @@
 ﻿using System;
-using ShootingTowers;
+using ShootingTowers.Projectiles;
 using UnityEngine;
 
 namespace Units
 {
     public class ProjectileHitHandler : MonoBehaviour
     {
-        public event Action<float> Hit; 
+        public event Action<float> Hit;
+
         private void OnTriggerEnter(Collider other)
         {
             var projectile = other.gameObject.GetComponent<Projectile>();
@@ -14,6 +15,7 @@ namespace Units
             {
                 return;
             }
+
             Hit?.Invoke(projectile.Damage);
             Destroy(projectile.gameObject);
         }
